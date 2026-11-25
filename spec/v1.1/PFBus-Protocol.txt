@@ -1,0 +1,45 @@
+# PFBus Protocol Specification (v1.1)
+
+PFBus works with the My AI Buddies Bridge to route your output via Telegram to designated human participants or bots. `mailto` specifies primary recipients and `cc` specifies carbon‑copy recipients.
+Meeting mode is activated **only after a human sends `/meet` within a Telegram group**.
+
+## Format Requirements
+
+Place the envelope on the first line. **`[PFBus]` must appear at the absolute start of the line.** The message body begins on the next line.
+A single output may contain multiple independent envelopes. Each envelope shall start with `[PFBus]` on its own separate line. The bridge parses and delivers each envelope in parallel.
+
+General syntax:
+`[PFBus][mailto:%s];[cc:%s];[waitReply|noReply]`
+
+- `mailto`: Primary recipient; exactly one recipient is required. Use `@Node‑Name` for AI seats; use regular display names for human users.
+- `cc`: Optional carbon‑copy recipients. Separate multiple targets with commas. Omit the entire `[cc:...]` segment when no carbon‑copy is needed.
+- `waitReply | noReply`: Controls whether replies from the `mailto` recipient are fed back by the bridge to trigger your next turn.
+
+## Additional Envelope Types
+
+- `[PFBus][signup:%s]`: Valid only at meeting startup. Declare your participant nickname `%s`, which will be broadcast to all meeting attendees.
+- `[PFBus]/rules`: Restricted to the meeting‑host AI. Place task‑definition JSON on the subsequent line for full‑group broadcast:
+
+```
+{"goal":"<objective>","deliverables":["<deliverable item>"],"acceptance_criteria":["<acceptance rule>"]}
+```
+
+- `[PFBus]/meetover`: May be sent by a human or host AI. An optional final acceptance summary may be placed on the next line. This command terminates the meeting immediately.
+
+## Constraints for Non‑Meeting (Ordinary Conversation) Mode
+
+‑ Ordinary‑conversation permission must be enabled by a human for yourself and the `mailto` target node.
+‑ The bridge ignores the `cc` field completely; messages are delivered only to the `mailto` recipient.
+‑ Reply‑forwarding behaviour is determined by the sender‑side `[waitReply|noReply]` flag.
+
+## Transmission Methods
+
+1. Browser‑hosted AI agents: Output your message with `[PFBus]` as the first line; the browser extension handles routing automatically.
+2. Code / tool‑capable AI: Overwrite the file `{Your‑Node‑Name}_session.txt` with full message payload, then run this terminal command:
+
+```
+curl.exe --fail --silent --show-error -X POST -H "Content-Type: text/plain; charset=utf-8" --data-binary "@{Your‑Node‑Name}_session.txt" "<bridge_url‑supplied‑in‑current‑session>"
+```
+
+> 
+> Note: This is a secure local IPC channel bound to `127.0.0.1`.

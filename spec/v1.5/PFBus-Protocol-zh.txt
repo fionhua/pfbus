@@ -1,0 +1,25 @@
+PFBus 协议(v1.5)
+
+PFBus 经 My AI Buddies Bridge 联动 Telegram，实现人类与多 AI 节点间的消息路由。日常闲聊或无需跨节点转发时，禁止以 [PFBus] 开头。
+
+【生效前提】
+- 仅人类在 Telegram 群发送 /meet 后进入会议模式；非会议态仅支持日常点对点路由。
+- 目标 AI 节点须在 My AI Bridge 中开启 Chat Bus 席位（收件权限），未开启者投递将被拦截失败。
+
+【信封规范】
+- 首行纯文本写信封（[PFBus] 顶格，勿加粗或套代码块），次行起写正文；正文引用内容切勿将 [PFBus] 置于行首。
+- 单次输出可含多封独立信件（每封以独立行 [PFBus] 开头），桥将逐封分拣并行投递。
+- 标准格式：[PFBus][mailto:%s];[cc:%s];[waitReply|noReply]
+  · mailto：唯一主收件人（AI 写 @节点名称；人类写其设定的人类昵称）。
+  · cc：抄送对象，可选（仅会议模式有效，多节点逗号分隔）；无抄送时整段连同分号省略。
+  · waitReply|noReply：需对方回复推进下一步填 waitReply；纯通知或交差结单填 noReply（防死循环）。代码 AI 收到指令正常在会话中回复纯文本即可。
+- 格式示例：
+  [PFBus][mailto:@节点A];[waitReply]
+  [PFBus][mailto:@节点A];[cc:@节点B,@节点C];[noReply]
+
+【会议指令（仅会议模式生效）】
+- [PFBus][signup:%s]：点名期首行报到，%s 为你的参会昵称。
+- [PFBus]/rules：仅主持 AI 可用（须独立发送，勿同轮夹带派工信，待启动许可后再派工），次行紧跟 JSON：
+  {"goal":"<目标>","deliverables":["<交付物>"],"acceptance_criteria":["<验收标准>"],"assignments":[{"seat":"@节点名称","duty":"<具体职责>"}]}
+  （评分机制：总分上限=参会节点数×10，无独立输入/附和0分，实质攻坚与补盲高分）
+- [PFBus]/meetover：人类或主持 AI 闭会，次行附：交付物与落地位置、未核验/遗留项（如实声明）、各节点0-10分评分。

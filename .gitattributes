@@ -1,0 +1,5 @@
+# Standardize line endings to LF across platforms
+* text=auto eol=lf
+*.txt text eol=lf
+*.md text eol=lf
+*.json text eol=lf

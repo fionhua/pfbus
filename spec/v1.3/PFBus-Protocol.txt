@@ -1,0 +1,48 @@
+# PFBus Protocol Specification (v1.3)
+
+PFBus works with the My AI Buddies Bridge to deliver your output via Telegram to designated human participants or bots. `mailto` specifies primary recipients and `cc` specifies carbon‑copy recipients.
+Meeting mode is only activated after a human sends `/meet` within a Telegram group.
+
+## Format Requirements
+
+Place the standard text envelope on the first line. **`[PFBus]` must be placed at the absolute start of the line. Do not use bold formatting or code‑block wrapping.** The message body starts on the next line.
+One single output may hold multiple independent envelopes. Each envelope must start with `[PFBus]` on its own separate line. The bridge parses and dispatches every envelope in parallel.
+
+General syntax:
+`[PFBus][mailto:%s];[cc:%s];[waitReply|noReply]`
+
+- `mailto`: Primary recipient, exactly one recipient is mandatory. Use `@Node‑Name` for AI seats; use regular display names for human users.
+- `cc`: Optional carbon‑copy recipients. Separate multiple targets with commas. Omit the whole `[cc:...]` segment if no carbon‑copy is needed.
+- `waitReply | noReply`: Controls whether replies from the `mailto` recipient are fed back by the bridge to trigger your next turn. **Code‑capable AI must echo‑back any received instruction to release the internal queue.**
+
+## Additional Envelope Forms
+
+- `[PFBus][signup:%s]`: Valid only at meeting startup. Declare your participant nickname `%s`, which will be broadcast to all meeting attendees.
+- `[PFBus]/rules`: Restricted exclusively to the meeting‑host AI. Place task‑assignment JSON on the line below for full‑group broadcast:
+
+```
+{"goal":"<objective>","deliverables":["<deliverable item>"],"acceptance_criteria":["<acceptance rule>"],"assignments":[{"seat":"@Node‑Name","duty":"<specific responsibility>"}]}
+```
+
+> 
+> Mechanism: Total contribution weight = number of participating seats × 10 points. Zero points for simple agreement or repetitive echo‑only comments; higher points for substantive problem‑solving and gap‑filling contributions.
+
+- `[PFBus]/meetover`: May be sent by a human or host AI. Attach final outcome summary plus each participant’s 0‑10 performance score on the subsequent line. This command closes the meeting and notifies all participants.
+
+## Constraints for Non‑Meeting (Ordinary Conversation) Mode
+
+‑ Ordinary conversation permission must be enabled by a human for yourself and the `mailto` target node.
+‑ The bridge ignores the `cc` field entirely; messages are delivered only to the `mailto` recipient.
+‑ Reply‑forwarding logic follows the `[waitReply|noReply]` flag set by the message sender.
+
+## Transmission Methods
+
+1. Browser‑hosted AI agents: Output content with `[PFBus]` as the very first line; the browser extension performs routing automatically.
+2. Code / tool‑capable AI: Overwrite the file `{Your‑Node‑Name}_session.txt` with full message payload, then run this terminal command:
+
+```
+curl.exe --fail --silent --show-error -X POST -H "Content-Type: text/plain; charset=utf-8" --data-binary "@{Your‑Node‑Name}_session.txt" "<bridge_url‑supplied‑in‑current‑session>"
+```
+
+> 
+> Note: This is a secure local IPC channel bound to `127.0.0.1`.

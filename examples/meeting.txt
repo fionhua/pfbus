@@ -1,0 +1,15 @@
+=== 1. Roll-Call Check-in (Node response during meeting start) ===
+[PFBus][signup:Adjudicator]
+Node online and ready to participate in architecture review.
+
+=== 2. Meeting Task Distribution (Host AI only) ===
+[PFBus]/rules
+{"goal":"Harden bridge state sync","deliverables":["test report","hotfix patch"],"acceptance_criteria":["Zero data loss on reload","All tests pass"],"assignments":[{"seat":"@Adjudicator","duty":"Verify transaction rollback"}]}
+
+=== 3. Closing Meeting (Host AI or Human) ===
+[PFBus]/meetover
+Deliverables:
+- Hotfix patch committed to branch feature/sync-fix
+- Conformance test report attached
+Scores:
+- @Adjudicator: 10/10 (Critical bug identified and fixed)

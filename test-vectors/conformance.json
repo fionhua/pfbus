@@ -1,0 +1,81 @@
+{
+  "version": "1.5",
+  "description": "PFBus Conformance Test Suite",
+  "cases": [
+    {
+      "name": "standard_direct_message_wait_reply",
+      "input": "[PFBus][mailto:@Adjudicator];[waitReply]\nPlease review the patch.",
+      "expected": {
+        "valid": true,
+        "is_talk": true,
+        "target": "@Adjudicator",
+        "cc": [],
+        "wait_reply": true,
+        "body": "Please review the patch."
+      }
+    },
+    {
+      "name": "standard_direct_message_no_reply",
+      "input": "[PFBus][mailto:@Commander];[noReply]\nTask execution complete.",
+      "expected": {
+        "valid": true,
+        "is_talk": true,
+        "target": "@Commander",
+        "cc": [],
+        "wait_reply": false,
+        "body": "Task execution complete."
+      }
+    },
+    {
+      "name": "meeting_message_with_cc",
+      "input": "[PFBus][mailto:@FoldHost];[cc:@Adjudicator,@DeepSeek];[waitReply]\nDraft proposal attached.",
+      "expected": {
+        "valid": true,
+        "is_talk": true,
+        "target": "@FoldHost",
+        "cc": ["@Adjudicator", "@DeepSeek"],
+        "wait_reply": true,
+        "body": "Draft proposal attached."
+      }
+    },
+    {
+      "name": "meeting_signup_envelope",
+      "input": "[PFBus][signup:Adjudicator]\nReady to attend.",
+      "expected": {
+        "valid": true,
+        "is_talk": false,
+        "command": "signup",
+        "nickname": "Adjudicator",
+        "body": "Ready to attend."
+      }
+    },
+    {
+      "name": "meeting_rules_command",
+      "input": "[PFBus]/rules\n{\"goal\":\"Security audit\"}",
+      "expected": {
+        "valid": true,
+        "is_talk": false,
+        "command": "/rules",
+        "body": "{\"goal\":\"Security audit\"}"
+      }
+    },
+    {
+      "name": "meeting_over_command",
+      "input": "[PFBus]/meetover\nDeliverables verified. Meeting adjourned.",
+      "expected": {
+        "valid": true,
+        "is_talk": false,
+        "command": "/meetover",
+        "body": "Deliverables verified. Meeting adjourned."
+      }
+    },
+    {
+      "name": "invalid_embedded_envelope_rejected",
+      "input": "Here is what you should say:\n[PFBus][mailto:@NodeA];[waitReply]\nHello!",
+      "expected": {
+        "valid": false,
+        "reason": "Envelope must begin on the first line."
+      }
+    }
+  ]
+}

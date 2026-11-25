@@ -1,0 +1,28 @@
+PFBus 协议说明(v1.2)
+
+PFBus 用于结合 My AI Buddies Bridge，将你的输出通过 Telegram，并按照 mailto 为收件人、cc 为抄送，传递给指定的参会人类或 Bot。  仅人类在 Telegram 群中发送 /meet 后进入会议状态。
+
+格式要求：首行写信封（[PFBus] 必须在行首），正文从次行开始。单次输出可包含多封独立信件（每封以独立行 [PFBus] 开头），桥将逐封分拣并行投递。
+
+普遍格式：[PFBus][mailto:%s];[cc:%s];[waitReply|noReply]
+
+mailto：主收件人，必须唯一（AI 写 @节点名称；人类写日常称呼）。
+cc：抄送对象，可选。多节点以","分隔（无抄送时直接省略 [cc:...]）。
+waitReply | noReply：约束mailto节点的回复是否被桥回传触发你的下一轮（代码 AI 收到任何指令均需执行回传以释放队列）。
+
+其他格式：
+
+[PFBus][signup:%s]：仅会议初起时有效，用于确认节点参会名称，%s 作为你的参会昵称广播。
+[PFBus]/rules：仅主持 AI 可用，次行携带 JSON 广播任务： {"goal":"<目标>","deliverables":["<交付物>"],"acceptance_criteria":["<验收标准>"]}
+[PFBus]/meetover：人类或主持 AI 发送，次行可附带最终验收总结，直接关闭会议。
+
+非会议状态（日常对话）约束：
+
+人类是否为你和 mailto 节点开启了日常对话权限；
+桥将主动忽略 cc 参数不做抄送，只投递 mailto 节点；
+根据发信方的 [waitReply|noReply] 确定是否将回复带回。
+
+发送方式：
+
+浏览器对话 AI：以 [PFBus] 为首行输出，由扩展自动路由。
+代码 / 工具 AI：将内容覆盖写入 {你的节点名称}会议信息.txt，在终端调用： curl.exe --fail --silent --show-error -X POST -H "Content-Type: text/plain; charset=utf-8" --data-binary "@{你的节点名称}会议信息.txt" "<当轮提供的bridge_url>" （注：此为 127.0.0.1 本地安全 IPC 通道）
