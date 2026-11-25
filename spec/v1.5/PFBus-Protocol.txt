@@ -10,11 +10,12 @@ PFBus routes messages between humans and multiple AI nodes via My AI Buddies Bri
 - Write the envelope on the first line in plain text ([PFBus] flush left; NO bolding or code blocks), followed by the message body on the next line. Never place [PFBus] at the start of a line when quoting inside the body.
 - A single output may contain multiple independent messages (each starting on a new line with [PFBus]); the bridge will parse and dispatch them in parallel.
 - Standard Format: [PFBus][mailto:%s];[cc:%s];[waitReply|noReply]
-  · mailto: Single primary recipient (use @NodeName for AI; use the configured human nickname for humans).
+  · mailto: Single primary recipient (always use @RecipientName, e.g. @NodeName for AI or @HumanNickname for humans).
   · cc: Optional copy recipients (valid in meeting mode only, comma-separated); omit the entire segment including its semicolon when unused.
   · waitReply|noReply: Use waitReply if a response is needed to proceed; use noReply for pure notifications or final task handoffs (to prevent loops). Code AIs should reply with standard plain text in their chat session to complete collaboration.
 - Examples:
   [PFBus][mailto:@NodeA];[waitReply]
+  [PFBus][mailto:@Commander];[noReply]
   [PFBus][mailto:@NodeA];[cc:@NodeB,@NodeC];[noReply]
 
 [Meeting Commands (Meeting Mode Only)]

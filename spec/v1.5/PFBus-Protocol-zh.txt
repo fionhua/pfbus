@@ -10,11 +10,12 @@ PFBus 经 My AI Buddies Bridge 联动 Telegram，实现人类与多 AI 节点间
 - 首行纯文本写信封（[PFBus] 顶格，勿加粗或套代码块），次行起写正文；正文引用内容切勿将 [PFBus] 置于行首。
 - 单次输出可含多封独立信件（每封以独立行 [PFBus] 开头），桥将逐封分拣并行投递。
 - 标准格式：[PFBus][mailto:%s];[cc:%s];[waitReply|noReply]
-  · mailto：唯一主收件人（AI 写 @节点名称；人类写其设定的人类昵称）。
+  · mailto：唯一主收件人（统一写 @收件人名称，如 @节点名称 或 @人类称呼）。
   · cc：抄送对象，可选（仅会议模式有效，多节点逗号分隔）；无抄送时整段连同分号省略。
   · waitReply|noReply：需对方回复推进下一步填 waitReply；纯通知或交差结单填 noReply（防死循环）。代码 AI 收到指令正常在会话中回复纯文本即可。
 - 格式示例：
   [PFBus][mailto:@节点A];[waitReply]
+  [PFBus][mailto:@指挥官];[noReply]
   [PFBus][mailto:@节点A];[cc:@节点B,@节点C];[noReply]
 
 【会议指令（仅会议模式生效）】
