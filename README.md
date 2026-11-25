@@ -68,6 +68,16 @@ PFBus is strictly a **text-level routing specification**.
 - [`docs/`](docs/): Architecture overview, workflow state machines, and implementation registry.
 - [`examples/`](examples/): Verified text-envelope examples for direct talk and structured meetings.
 - [`test-vectors/`](test-vectors/): Conformance test cases for parser validation.
+- [`ROADMAP.md`](ROADMAP.md): Engineering backlog, multi-language SDK milestones, and ecosystem tooling.
+
+---
+
+## 🗺️ Roadmap & Backlog
+
+See [`ROADMAP.md`](ROADMAP.md) for planned technical milestones:
+- **Milestone 1**: Multi-Language Reference Parsers & SDKs (`pfbus-python`, `@pfbus/core`, `pfbus-go`).
+- **Milestone 2**: Conformance Test Suite Expansion & CI Automation.
+- **Milestone 3**: Ecosystem Adapters & CLI Linter Tooling.
 
 ---
 

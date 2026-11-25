@@ -68,6 +68,16 @@ PFBus 是一套严格的**纯文本应用层路由规范**：
 - [`docs/`](docs/)：架构设计、会议状态机与已知实现清单。
 - [`examples/`](examples/)：点对点通信与会议模式真实范例。
 - [`test-vectors/`](test-vectors/)：解析器一致性测试用例集。
+- [`ROADMAP.md`](ROADMAP.md)：工程路线图、多语言 SDK 发版规划与生态待办事项。
+
+---
+
+## 🗺️ 路线图与待办事项 (Roadmap)
+
+详见 [`ROADMAP.md`](ROADMAP.md)：
+- **阶段一（核心杠杆）**：多语言参考解析器与 SDK（`pfbus-python`、`@pfbus/core`、`pfbus-go`）。
+- **阶段二（质量防线）**：一致性测试套件扩展与 GitHub Actions 跨语言自动化回归测试。
+- **阶段三（生态扩展）**：PFBus CLI 校验工具及主流 Agent 框架（LangChain / MCP）桥接适配器。
 
 ---
 
