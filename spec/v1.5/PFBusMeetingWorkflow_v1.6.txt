@@ -1,150 +1,147 @@
-PocketFleet 会议生命周期与协作编排规约(v1.6·终审定稿版)
+PocketFleet Meeting Lifecycle and Orchestration Specification (v1.6 · Final Approved Edition)
 
-【架构核心原则】
-本规约与 PFBus 通用通信协议（v1.4）完全解耦：
-1. PFBus 协议母本负责底层语法（怎么发信、信封格式、收发字段语义）；
-2. 本规约负责上层生命周期与协作流程（何时启动、何时派工、门禁流转、如何闭会）；
-3. 会前仅下发一次 PFBus 协议母本，会中各轮工单仅包含当前任务与动态回传凭证，严禁重复复述通信语法。
+[Core Architectural Principles]
+This specification is completely decoupled from the PFBus General Communication Protocol (v1.4):
+1. The PFBus Protocol specification governs underlying syntax (how messages are sent, envelope format, semantics of routing fields);
+2. This specification governs upper-layer lifecycles and collaboration workflows (when to start, when to dispatch tasks, permission gates, and how to conclude);
+3. The PFBus Protocol specification is delivered only once prior to the meeting; subsequent task dispatches contain only current tasks and dynamic return credentials, strictly avoiding repetitive syntax reiteration.
 
-【星舰人机协同铁律（人言未竟，AI勿抢跑）】
-人类习惯一段一段抛出问题，且绝不在节点能否出席未知时预付长篇议题成本。
-因此必须恪守：人类仅敲击 /meet 发起 ➔ 30秒先点名验证出席 ➔ 阵容确立后主持主动向人类首问 ➔ 人类看清到会阵容后从容下达议题 ➔ 主持提炼并输出规则。
-
---------------------------------------------------------------------------------
-【精炼生命周期主线】
-人类 /meet ➔ 一次点名(30s) ➔ 阵容确立 ➔ 主持开场首问 ➔ 人类下达议题 ➔ 主持提交规则 ➔ 桥定向许可 ➔ 派工与回传 ➔ 原卡结算
-
-日常态 (IDLE)
-  │  人类在群发送 /meet（纯指令，无预付议题负担）或 桌面端点击发起
-  ▼
-点名准备期 (PREP·最长30秒)
-  │  下发 v1.4 母本与点名邀请 ➔ 节点回复 [PFBus][signup:%s] ➔ 验证活体与法定人数
-  ▼
-主持首问与规则发布期 (RULES)
-  │  实到就绪 ➔ 主持开场首问 ➔ 人类下达议题 ➔ 主持提炼输出 [PFBus]/rules ➔ 桥仅向主持发许可
-  ▼
-研讨协作期 (ACTIVE)
-  │  跨席位并行 / 单席位排队 ➔ 各席位执行并回传 ➔ 看门狗熔断监控
-  ▼
-结算闭会期 (CLOSED)
-  │  主持验收闭会 或 人类随时中止 ➔ 原地刷新终审卡片 ➔ 释放所有席位租约
-  ▼
-回归日常态 (IDLE)
+[Starfleet Human-AI Collaboration Iron Law (Human speech unfinished, AI do not preempt)]
+Humans typically present problems incrementally in segments and will never prepay the cognitive cost of lengthy topics when attendee availability is still unknown.
+Therefore, it is strictly required: Human initiates with a simple /meet ➔ 30s roll-call verifies attendance ➔ Once quorum is established, Host initiates opening inquiry to Human ➔ Human reviews actual lineup and calmly dispatches topic ➔ Host synthesizes and emits rules.
 
 --------------------------------------------------------------------------------
-【详细阶段执行规约】
+[Streamlined Lifecycle Mainline]
+Human /meet ➔ Single Roll-Call(30s) ➔ Quorum Verification ➔ Host Opening Inquiry ➔ Human Topic Dispatch ➔ Host Rules Submission ➔ Directed Clearance ➔ Dispatch & Return ➔ In-Place Settlement
 
-第一阶段：点名准备期（PREP · 最长 30 秒 · 零预付成本）
-1. 触发条件：
-   - 人类在 Telegram 群中发送 /meet（仅纯命令，绝不强求携带长篇议题）；
-   - 或在客户端桌面界面点击【发起会议】按钮。
-2. 桥动作（协议与点名会前交付）：
-   - 协议母本交付（全场仅此一次）：代码 AI 工单附带本地文件路径（file:///.../PFBusProtocol_v1.4.txt）；网页对话 AI 工单前置注入 v1.4 纯文本。
-   - 到会点名广播：向参选席位下发入席邀请（仅确认“能否到会”，不触发任何实质思考，零 Token 浪费）。
-3. 节点动作：
-   - 参会节点首行输出：[PFBus][signup:你的参会昵称]，次行附带简短准备就绪说明。
-   - 代码 AI 准入先验：代码 AI 必须先实际读取本地协议文件，确认理解通信语法后再执行 signup 回传。
-4. 防御护栏（准入资格与失败出口）：
-   - 静默入席：桥在 Telegram 群内仅就地更新“席位就绪状态卡”，严禁向群聊刷屏回执流水。
-   - 30秒准入截止：全员到齐或满 30 秒即强制切断入席，锁定本场《实际参会名单》（缺席节点在就绪卡上红灯标明剔除）。
-   - 失败出口：若 30 秒截止时主持缺席，或实到总数 < 2，桥在卡片上明确通报并挂载【改选主持】与【取消会议】按钮，不让会议卡死在筹备期。人类无需承担任何沉没成本。
+IDLE State
+  │  Human sends /meet in group (pure command, zero prepay burden) or clicks launch on desktop
+  ▼
+Roll-Call Preparation Phase (PREP · Max 30s)
+  │  Deliver v1.4 spec and invitation ➔ Nodes reply [PFBus][signup:%s] ➔ Verify liveness & quorum
+  ▼
+Host Opening Inquiry & Rule Publication Phase (RULES)
+  │  Lineup ready ➔ Host opening inquiry ➔ Human dispatches topic ➔ Host emits [PFBus]/rules ➔ Clearance to Host only
+  ▼
+Deliberation & Collaboration Phase (ACTIVE)
+  │  Cross-seat parallel / Single-seat queued ➔ Nodes execute and return ➔ Watchdog circuit breaking
+  ▼
+Settlement & Adjournment Phase (CLOSED)
+  │  Host finishes or Human aborts ➔ In-place refresh of settlement card ➔ Release all seat leases
+  ▼
+Return to IDLE State
 
-第二阶段：主持首问与规则门禁（RULES · 人言未竟，AI勿抢跑）
-1. 触发条件：准备期结束，法定人数达标（主持在场且总数 ≥ 2），证明本场会议具备真实开会条件。
-2. 主持开场首问：
-   - 桥向主持人下发《开席简报》（包含实际到席名单）；
-   - 主持人面向全场人类发起【开场首问】：报告到会阵容，正式邀请人类下达议题。
-3. 人类下达议题与讨论：
-   - 人类目睹实际到会阵容后，从容在群内下发议题、背景材料与任务预期（允许人类一段、一段分步补充）；
-   - 恪守“人言未竟，AI勿抢跑”：在人类未给出明确任务结论前，AI 仅倾听确认，绝不提前私自派工。
-4. 主持提炼输出规则：
-   - 人类议题陈述完毕后，主持 AI 将人类意图提炼为任务三要素与分工指令：
+--------------------------------------------------------------------------------
+[Detailed Phase Execution Specifications]
+
+Phase 1: Roll-Call Preparation Phase (PREP · Max 30 Seconds · Zero Prepay Cost)
+1. Trigger Condition:
+   - Human sends /meet in Telegram group (pure command, never requiring a lengthy topic);
+   - Or clicks "Start Meeting" button in client desktop UI.
+2. Bridge Actions (Pre-meeting Protocol & Roll-Call Delivery):
+   - Protocol Delivery (Once per meeting): Task ticket for Code AI includes local file path (file:///.../PFBusProtocol_v1.4.txt); Web Dialog AI is injected with v1.4 plain text.
+   - Roll-Call Broadcast: Dispatches attendance invitation to candidate seats (only confirming "can attend", triggering zero substantive cognitive load, zero token waste).
+3. Node Actions:
+   - Participating nodes output on the first line: [PFBus][signup:YourNickname], followed by a brief readiness note on the next line.
+   - Code AI Admission Pre-verification: Code AI must read the local protocol file and verify comprehension of communication syntax before executing signup return.
+4. Defensive Guardrails (Admission Qualification & Failure Exit):
+   - Silent Attendance: The Bridge only updates the "Seat Readiness Status Card" in-place in Telegram, strictly prohibiting flood receipts in group chat.
+   - 30-Second Cutoff: Attendance closes immediately when all members arrive or upon 30 seconds timeout, locking the official "Actual Attendance List" (absent nodes marked red and purged on status card).
+   - Failure Exit: If Host is absent or quorum < 2 at the 30s cutoff, Bridge reports clearly on the status card with "Re-elect Host" and "Cancel Meeting" buttons, preventing meetings from getting stuck in preparation. Humans incur zero sunk cost.
+
+Phase 2: Host Opening Inquiry & Rule Gating (RULES · Human speech unfinished, AI do not preempt)
+1. Trigger Condition: PREP ends with legal quorum met (Host present and total count >= 2), proving meeting conditions are genuinely satisfied.
+2. Host Opening Inquiry:
+   - Bridge delivers "Meeting Briefing" to Host (including actual attendance list);
+   - Host initiates [Opening Inquiry] to all humans: reports attendee lineup and formally invites Human to dispatch topic.
+3. Human Topic Dispatch & Discussion:
+   - Human, seeing actual attendee lineup, calmly delivers topic, background materials, and expectations in group (allowing incremental, segment-by-segment elaboration);
+   - Uphold "Human speech unfinished, AI do not preempt": before Human delivers explicit task conclusions, AI only listens and confirms, never preemptively dispatching tasks.
+4. Host Rule Synthesis & Emission:
+   - After Human completes topic presentation, Host AI synthesizes Human intent into three task essentials and assignment directives:
      [PFBus]/rules
-     {"goal":"<议题目标>","deliverables":["<具体交付物>"],"acceptance_criteria":["<验收标准>"],"assignments":[{"seat":"@节点名称","duty":"<具体职责>"}]}
-5. 桥动作（定向许可·严禁全场广播）：
-   - 校验规则有效性，自动将 "seat" 自然名称透明映射到底层物理席位；
-   - 启动许可仅发主持：桥仅向主持 AI 单独下达【启动许可】，严禁全场广播；其余席位在收到首轮派工时，一并获知本场总目标与自身职责。
-6. 防御护栏（启动门禁与状态持久化）：
-   - 严禁抢跑：在收到启动许可前，主持不得派工；门禁状态由桥持久化，断线可恢复。
+     {"goal":"<topic goal>","deliverables":["<deliverables>"],"acceptance_criteria":["<criteria>"],"assignments":[{"seat":"@NodeName","duty":"<duty>"}]}
+5. Bridge Actions (Directed Clearance · Full Broadcast Prohibited):
+   - Validates rule syntax and transparently maps "seat" natural names to physical seats;
+   - Directed Clearance to Host ONLY: Bridge delivers [Start Clearance] exclusively to Host AI; other seats learn overall goals and duties upon receiving their first task dispatch.
+6. Defensive Guardrails (Start Clearance Gating & State Persistence):
+   - Strict Anti-Preemption: Prior to receiving Start Clearance, Host may not dispatch tasks; gating state is persisted by Bridge and recoverable across disconnections.
 
-第三阶段：自主研讨与推进（ACTIVE · 独立并行与单席排队）
-1. 出站通信：
-   - 统一遵循 PFBus v1.4 通用格式：[PFBus][mailto:@节点名称];[cc:...];[waitReply|noReply]。
-   - 每轮工单仅携带两项要素：① 当前任务与讨论内容；② 本轮回传凭证（动态 IPC URL）。
-2. 并发与排队隔离（手谈防串单）：
-   - 跨席位并行：不同物理席位之间完全并行，主持单轮可输出多封独立 [PFBus] 信件拆包并行派发；
-   - 单席位排队：同一物理会话或共用回传文件（{节点名}会议信息.txt）的任务必须 FIFO 严格排队，严禁并发踩踏；
-   - 票据精准对齐：超时不代表旧任务终止，迟到回执仅认领原工单票据，严禁串单重放。
-3. 防御护栏（会期熔断与收敛催办）：
-   - 桥内置会期阈值（默认最高 6 轮交互或单席 180 秒无进展超时），第 5 轮自动向主持注入【收敛提醒】，防范无限空转。
+Phase 3: Autonomous Deliberation & Advancement (ACTIVE · Independent Parallelism & Single-Seat Queueing)
+1. Outbound Communication:
+   - Strictly conforms to PFBus v1.4 general format: [PFBus][mailto:@NodeName];[cc:...];[waitReply|noReply].
+   - Each round's task ticket carries only two components: 1) Current task and discussion content; 2) Return credentials for this round (dynamic IPC URL).
+2. Concurrency and Queue Isolation (Ticket Collision Prevention):
+   - Cross-Seat Parallelism: Different physical seats are fully concurrent; Host may emit multiple independent [PFBus] envelopes in a single turn for concurrent distribution;
+   - Single-Seat Queueing: Tasks for the same physical session or shared return file (./{node_name}meeting_info.txt) must strictly queue FIFO, eliminating concurrency collisions;
+   - Precise Ticket Alignment: Timeout does not mean task cancellation; late receipts only claim original ticket IDs, strictly preventing replay collisions.
+3. Defensive Guardrails (Meeting Circuit Breaking & Convergence Urging):
+   - Bridge has built-in meeting thresholds (default max 6 rounds or 180s without progress per seat); round 5 automatically injects [Convergence Reminder] to Host, preventing infinite loops.
 
-第四阶段：成果收敛与原卡结算（CLOSED · 全路径闭会）
-1. 触发条件（支持双路径）：
-   - 正常闭会：交付物产出完毕，主持 AI 发起 [PFBus]/meetover；
-   - 异常闭会：任务受阻或人类随时发送 /meetover 或点击【终止会议】（支持部分完成结算）。
-2. 闭会出站格式：
+Phase 4: Synthesis, Settlement & Adjournment (CLOSED · Multi-Path Closure)
+1. Trigger Condition (Dual Paths Supported):
+   - Normal Closure: Deliverables completed and acceptance verified; Host AI emits [PFBus]/meetover;
+   - Abnormal Closure: Tasks blocked or Human sends /meetover / clicks "Terminate Meeting" at any time (supports partial settlement).
+2. Adjournment Outbound Format:
    [PFBus]/meetover
-   【最终验收通报】
-   1. 交付物清单与物理落地位置（文件路径/代码PR/产物位置）：...
-   2. 遗留事项与未核验项（如实声明，区分验收通过与未完成项）：...
-   3. 节点战略贡献评分（单节点满分10分，未达上限不必硬分；纯附和者记0分）：
-      - @节点A：9分（完成核心攻坚）
-      - @节点B：0分（简单附和，无独立输入）
-3. 桥动作（原卡结算与优雅停机）：
-   - 持久化优先：桥先完整落盘成果与未核验项，再注销租约，防止卡片发送失败导致成果丢失；
-   - 原位刷新：在群内原地刷新原状态卡为终局结算卡，撤销底部临时键盘，不重复发多份报告刷屏；
-   - 彻底清场：释放所有席位占用，系统平滑回归日常对话态。
+   [Final Acceptance Report]
+   1. Deliverables list and physical paths (file paths / git PR / artifact locations): ...
+   2. Outstanding issues & unverified items (declare truthfully, distinguishing verified vs uncompleted): ...
+   3. Node strategic contribution ratings (0-10 points per node; no need to force-fill to cap; mere assent scores 0):
+      - @NodeA: 9 points (completed core technical breakthrough)
+      - @NodeB: 0 points (simple agreement, no independent input)
+3. Bridge Actions (In-Place Settlement & Graceful Shutdown):
+   - Persistence Priority: Bridge safely writes deliverables and unverified items to disk before revoking leases, ensuring no results are lost if card sending fails;
+   - In-Place Refresh: In Telegram group, refreshes original status card in-place into final settlement card, revokes temporary keyboard, avoiding multi-report spam;
+   - Complete Cleanup: Releases all seat allocations; system returns smoothly to normal dialogue state.
 
 --------------------------------------------------------------------------------
-【附录：参会 AI 出站标准话术模板集（心机姝精雕 · 终审定稿版）】
-（注：桥侧系统 Prompt 由 Go 后台代码组装生成，AI 无需学习；参会 AI 与主持 AI 严格遵循以下出站模板）
+[Appendix: Standard Outbound Script Templates for Participating AI (Crafted by Xinji Shu · Final Approved Edition)]
+(Note: Bridge system prompts are assembled in Go backend code; AI does not need to learn communication syntax details. Participating AI and Host AI strictly adhere to the following outbound templates)
 
-模板 1：[signup] 席位报到话术（参会 AI 出站）
-触发：PREP 点名阶段收到入席邀请后
-字数：正文 16 字，远低于 25 字上限
+Template 1: [signup] Seat Check-in Script (Participating AI Outbound)
+Trigger: After receiving attendance invitation during PREP roll-call
+Rule: Line 1 envelope, Line 2 concise readiness declaration
 [PFBus][signup:{{nickname}}]
-席位已就绪，已读协议，等待开席。
+Seat ready, protocol read, awaiting Host opening.
 
-模板 2：开场首问话术（主持 AI → 指挥官）
-触发：点名结束、法定人数达标后
-调性：干练控场，无客服腔，符合「人言未竟，AI勿抢跑」铁律
-[PFBus][mailto:指挥官];[waitReply]
-本场实到：{{seat_list}}。阵容就绪，请下达议题与交付要求。
+Template 2: Opening Inquiry Script (Host AI -> Commander)
+Trigger: After roll-call concludes and legal quorum is met
+Tone: Crisp and commanding, no customer service fluff, conforming to the "Human speech unfinished, AI do not preempt" iron law
+[PFBus][mailto:Commander];[waitReply]
+Actual attendees: {{seat_list}}. Lineup ready, please dispatch topic.
 
-模板 3：/rules 主持规则发布（主持 AI 出站）
-触发：人类完成议题陈述后
-调性：首行信封，次行紧凑 JSON，严禁 Markdown 代码块包裹
+Template 3: /rules Host Rule Publication (Host AI Outbound)
+Trigger: After Human completes topic presentation
+Tone: Line 1 envelope, Line 2 compact JSON, strictly forbidden from using markdown code fences
 [PFBus]/rules
 {"goal":"{{goal}}","deliverables":["{{deliverable_1}}"],"acceptance_criteria":["{{acceptance_1}}"],"assignments":[{"seat":"@{{seat_1}}","duty":"{{duty_1}}"}]}
 
-模板 4：研讨派工与成果回传话术（主持 ➔ 参会席 / 参会席 ➔ 主持）
-4.1 主持派工（主持 → 参会节点）
-[PFBus][mailto:@{{target_node}}];[waitReply]
-【任务】{{task_description}}
-【验收】{{acceptance_detail}}
-【交付】明确输出形式与落地路径
+Template 4: Deliberation Task Dispatch and Result Return Scripts (Host -> Participant / Participant -> Host)
+4.1 Host Dispatch (Host -> Participant Node)
+[PFBus][mailto:@{{target}}];[waitReply]
+[Task] {{task_description}}
+[Acceptance] {{acceptance_detail}}
+[Delivery] Specify output format and landing path
 
-4.2 节点回传（参会节点 → 主持）
-- 正常完成版：
-[PFBus][mailto:@{{host_node}}];[waitReply]
-【完成】{{result_summary}}
-交付物：{{deliverable_path}}
+4.2 Node Return (Participant Node -> Host)
+- Normal Completion:
+[PFBus][mailto:@{{host}}];[waitReply]
+[Completed] {{result_summary}}
+Delivery: {{landing_path}}
 
-- 阻塞上报版：
-[PFBus][mailto:@{{host_node}}];[waitReply]
-【阻塞】{{specific_block_point}}
-需支持：{{required_coordination}}
+- Blocker Report:
+[PFBus][mailto:@{{host}}];[waitReply]
+[Blocked] {{specific_block_point}}
+Assistance Needed: {{assistance_required}}
 
-模板 5：/meetover 闭会通报话术（主持 AI 出站）
-触发：目标闭环或终止会议时
-调性：铁面客观，奖惩分明，向指挥官做闭环交付
+Template 5: /meetover Adjournment Report Script (Host AI Outbound)
+Trigger: Upon goal closure or meeting termination
+Tone: Strict and objective, clear rewards and penalties, delivering closed-loop outcomes to the Commander
 [PFBus]/meetover
-【最终验收通报】
-1. 交付物落地：
-   - 产物路径/外链：{{deliverable_location}}
-2. 遗留与未核验项：
-   - 已验收：{{passed_items}}
-   - 未完成/待核验：{{pending_items}}
-3. 节点贡献评分（单节点满分10分）：
-   - @{{node_1}}：{{score_1}}分，{{core_contribution_reason}}
-   - @{{node_2}}：0分，无独立观点，仅附和他人输出
+[Final Acceptance Report]
+1. Deliverables: {{artifact_path_or_link}}
+2. Pending Verification: {{unverified_items_or_none}}
+3. Contribution Ratings:
+   - @{{node_1}}: {{score_1}} points, {{reason_1}}
+   - @{{node_2}}: 0 points, no independent output
