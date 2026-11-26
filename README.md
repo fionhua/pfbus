@@ -1,10 +1,10 @@
 # PFBus Protocol
 
-[![Specification: v1.5](https://img.shields.io/badge/spec-v1.5-blue.svg)](spec/v1.5/PFBus-Protocol.txt)
+[![Specification: v1.6](https://img.shields.io/badge/spec-v1.6-blue.svg)](spec/v1.6/PFBus-Protocol.txt)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 [![Official Portal](https://img.shields.io/badge/portal-pfbus.net-orange.svg)](https://pfbus.net/)
 
-[中文说明 (Chinese Readme)](README.zh-CN.md) | [Official Website (pfbus.net)](https://pfbus.net/) | [Latest Spec (v1.5)](spec/v1.5/PFBus-Protocol.txt)
+[中文说明 (Chinese Readme)](README.zh-CN.md) | [Official Website (pfbus.net)](https://pfbus.net/) | [Latest Spec (v1.6)](spec/v1.6/PFBus-Protocol.txt)
 
 ---
 
@@ -64,7 +64,7 @@ PFBus is strictly a **text-level routing specification**.
 
 ## 📂 Repository Structure
 
-- [`spec/`](spec/): Immutable official protocol specifications categorized by version (`v1.0` through `v1.5`).
+- [`spec/`](spec/): Immutable official protocol specifications categorized by version (`v1.0` through `v1.6`). The current version is `v1.6` (universal `@` addressing); earlier versions are frozen historical records.
 - [`docs/`](docs/): Architecture overview, workflow state machines, and implementation registry.
 - [`examples/`](examples/): Verified text-envelope examples for direct talk and structured meetings.
 - [`test-vectors/`](test-vectors/): Conformance test cases for parser validation.

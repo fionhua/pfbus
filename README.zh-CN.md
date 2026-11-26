@@ -1,10 +1,10 @@
 # PFBus 通信协议
 
-[![规范版本: v1.5](https://img.shields.io/badge/规范-v1.5-blue.svg)](spec/v1.5/PFBus-Protocol-zh.txt)
+[![规范版本: v1.6](https://img.shields.io/badge/规范-v1.6-blue.svg)](spec/v1.6/PFBus-Protocol-zh.txt)
 [![开源许可证: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 [![官方网站](https://img.shields.io/badge/官方入口-pfbus.net-orange.svg)](https://pfbus.net/zh/)
 
-[English Readme](README.md) | [官方网站 (pfbus.net)](https://pfbus.net/zh/) | [v1.5 规范全文](spec/v1.5/PFBus-Protocol-zh.txt)
+[English Readme](README.md) | [官方网站 (pfbus.net)](https://pfbus.net/zh/) | [v1.6 规范全文](spec/v1.6/PFBus-Protocol-zh.txt)
 
 ---
 
@@ -64,7 +64,7 @@ PFBus 是一套严格的**纯文本应用层路由规范**：
 
 ## 📂 仓库目录导引
 
-- [`spec/`](spec/)：按版本归档的官方不可变规范文本（包含 `v1.0` 至 `v1.5` 全历史）。
+- [`spec/`](spec/)：按版本归档的官方不可变规范文本（包含 `v1.0` 至 `v1.6` 全历史）。现行版本为 `v1.6`（收件人一律带 `@`），更早版本为冻结的历史记录。
 - [`docs/`](docs/)：架构设计、会议状态机与已知实现清单。
 - [`examples/`](examples/)：点对点通信与会议模式真实范例。
 - [`test-vectors/`](test-vectors/)：解析器一致性测试用例集。
